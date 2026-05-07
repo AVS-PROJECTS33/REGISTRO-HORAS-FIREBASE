@@ -6,13 +6,31 @@
     <!-- Prevenir zoom en móviles -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- Configuración PWA e Icono (Añadido a Pantalla de Inicio) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='512' height='512' fill='%23f8fafc' /%3E%3Crect x='40' y='80' width='432' height='392' rx='40' fill='none' stroke='%233b82f6' stroke-width='32' /%3E%3Cline x1='40' y1='200' x2='472' y2='200' stroke='%233b82f6' stroke-width='32' /%3E%3Crect x='120' y='40' width='32' height='80' rx='16' fill='%23ef4444' /%3E%3Crect x='360' y='40' width='32' height='80' rx='16' fill='%23ef4444' /%3E%3Ctext x='256' y='395' font-family='system-ui, -apple-system, sans-serif' font-size='160' font-weight='900' text-anchor='middle' fill='%231e293b' letter-spacing='-2'%3EMD%3C/text%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='512' height='512' fill='%23f8fafc' /%3E%3Crect x='40' y='80' width='432' height='392' rx='40' fill='none' stroke='%233b82f6' stroke-width='32' /%3E%3Cline x1='40' y1='200' x2='472' y2='200' stroke='%233b82f6' stroke-width='32' /%3E%3Crect x='120' y='40' width='32' height='80' rx='16' fill='%23ef4444' /%3E%3Crect x='360' y='40' width='32' height='80' rx='16' fill='%23ef4444' /%3E%3Ctext x='256' y='395' font-family='system-ui, -apple-system, sans-serif' font-size='160' font-weight='900' text-anchor='middle' fill='%231e293b' letter-spacing='-2'%3EMD%3C/text%3E%3C/svg%3E">
+    <!-- Configuración iOS y Android Add to Home Screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Horas MD">
-    <meta name="theme-color" content="#f8fafc">
+    <!-- Icono Opción 2 (Modo Oscuro) integrado en Base64 para que funcione en 1 solo archivo -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzFlMjkzYiIvPjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iMTUwIiBmaWxsPSIjM2I4MmY2Ii8+PGNpcmNsZSBjeD0iMTQwIiBjeT0iODAiIHI9IjI0IiBmaWxsPSIjZmZmZmZmIi8+PGNpcmNsZSBjeD0iMzcyIiBjeT0iODAiIHI9IjI0IiBmaWxsPSIjZmZmZmZmIi8+PGNpcmNsZSBjeD0iMTQwIiBjeT0iODAiIHI9IjE0IiBmaWxsPSIjMWU0MGFmIi8+PGNpcmNsZSBjeD0iMzcyIiBjeT0iODAiIHI9IjE0IiBmaWxsPSIjMWU0MGFmIi8+PHRleHQgeD0iMjU2IiB5PSIzOTAiIGZvbnQtZmFtaWx5PSJzeXN0ZW0tdWksIC1hcHBsZS1zeXN0ZW0sIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIwIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmZmZmIiBsZXR0ZXItc3BhY2luZz0iLTUiPk1EPC90ZXh0Pjwvc3ZnPg==">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzFlMjkzYiIvPjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iMTUwIiBmaWxsPSIjM2I4MmY2Ii8+PGNpcmNsZSBjeD0iMTQwIiBjeT0iODAiIHI9IjI0IiBmaWxsPSIjZmZmZmZmIi8+PGNpcmNsZSBjeD0iMzcyIiBjeT0iODAiIHI9IjI0IiBmaWxsPSIjZmZmZmZmIi8+PGNpcmNsZSBjeD0iMTQwIiBjeT0iODAiIHI9IjE0IiBmaWxsPSIjMWU0MGFmIi8+PGNpcmNsZSBjeD0iMzcyIiBjeT0iODAiIHI9IjE0IiBmaWxsPSIjMWU0MGFmIi8+PHRleHQgeD0iMjU2IiB5PSIzOTAiIGZvbnQtZmFtaWx5PSJzeXN0ZW0tdWksIC1hcHBsZS1zeXN0ZW0sIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIwIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmZmZmIiBsZXR0ZXItc3BhY2luZz0iLTUiPk1EPC90ZXh0Pjwvc3ZnPg==">
+
+    <!-- Script invisible para compatibilidad de icono en iOS (convierte el SVG a PNG en memoria) -->
+    <script>
+        (function() {
+            var link = document.querySelector('link[rel="apple-touch-icon"]');
+            if (link) {
+                var img = new Image();
+                img.onload = function() {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = 512;
+                    canvas.height = 512;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 512, 512);
+                    link.href = canvas.toDataURL('image/png');
+                };
+                img.src = link.href;
+            }
+        })();
+    </script>
 
     <!-- Librerías para PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -192,6 +210,7 @@
         .cal-morado { background: #f3e8ff; color: #7e22ce; font-weight: bold; border-color: #7e22ce;}
         .cal-amarillo-chillon { background: #fef08a; color: #713f12; font-weight: bold; border-color: #facc15;}
         .cal-finde { color: #3b82f6; font-weight: bold; }
+        .cal-hoy { border: 2px solid #3b82f6 !important; color: #3b82f6 !important; font-weight: 900 !important; }
         
         /* Festivos en rojo */
         .festivo-con-registro { color: #be123c !important; font-weight: 900 !important; }
@@ -203,6 +222,7 @@
         .dark-mode .cal-morado { background: rgba(126, 34, 206, 0.2); color: #c084fc; border-color: #c084fc;}
         .dark-mode .cal-amarillo-chillon { background: rgba(250, 204, 21, 0.2); color: #fde047; border-color: #fde047;}
         .dark-mode .cal-finde { color: #60a5fa; }
+        .dark-mode .cal-hoy { border: 2px solid #60a5fa !important; color: #60a5fa !important; }
         .dark-mode .festivo-con-registro { color: #fb7185 !important; }
 
         /* Modales */
@@ -424,7 +444,7 @@
 
     <!-- CRÉDITOS DENTRO DE LA APP (NO VISIBLES EN LOGIN) -->
     <div style="text-align: center; margin-top: 5px; margin-bottom: 30px; font-size: 12px; color: var(--text-muted); opacity: 0.7;">
-        AVS v.4.5
+        AVS v.4.6
     </div>
 </div>
 
@@ -589,6 +609,10 @@
         
         document.body.style.filter = `brightness(${config.brightness !== undefined ? config.brightness : 1})`;
     };
+
+    const savedTheme = JSON.parse(localStorage.getItem('app_theme_config'));
+    if (savedTheme) window.aplicarTema(savedTheme);
+
 
     // --- AUTENTICACIÓN ---
     const initAuth = async () => {
@@ -1160,6 +1184,7 @@
             '01-01': 'Año Nuevo',
             '01-06': 'Epifanía del Señor',
             '05-01': 'Fiesta del Trabajo',
+            '05-25': 'Lunes de Pascua',
             '06-24': 'San Juan',
             '08-15': 'Asunción de la Virgen',
             '09-11': 'Diada Nacional de Cataluña',
@@ -1215,6 +1240,13 @@
         const nombreFestivo = obtenerFestivo(fechaStr);
         
         let htmlContent = "";
+
+        // Indicador de día actual
+        const hoy = new Date();
+        const todayStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+        if (fechaStr === todayStr) {
+            htmlContent += `<div style="margin-bottom: 15px; color: var(--primary); font-weight: bold; background: rgba(59, 130, 246, 0.1); padding: 8px; border-radius: 6px;">📍 HOY</div>`;
+        }
         
         if (nombreFestivo) {
             htmlContent += `<div style="margin-bottom: 15px; color: #be123c; font-weight: bold; background: rgba(225, 29, 72, 0.1); padding: 8px; border-radius: 6px;">🎉 FESTIVO: ${nombreFestivo}</div>`;
@@ -1356,6 +1388,13 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
             const dayOfWeek = new Date(year, month, d).getDay();
             if (!tieneRegistros && (dayOfWeek === 0 || dayOfWeek === 6)) {
                 colorClass = "cal-finde";
+            }
+            
+            // Resaltar día de hoy
+            const hoy = new Date();
+            const todayStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+            if (dateStr === todayStr) {
+                colorClass += " cal-hoy";
             }
             
             // SIEMPRE asignamos el evento onclick ahora, pasando si tiene o no registros
@@ -1594,7 +1633,7 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         });
 
         doc.setFontSize(11);
-        doc.setTextColor(60);
+        doc.textColor(60);
         doc.text("RESUMEN GENERAL", 14, 32);
         
         doc.autoTable({
