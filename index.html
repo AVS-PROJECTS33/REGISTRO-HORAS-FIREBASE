@@ -9,32 +9,36 @@
     <!-- Configuración iOS y Android Add to Home Screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Horas MD">
-    <!-- Icono Opción 2 (Modo Oscuro) integrado en Base64 para que funcione en 1 solo archivo -->
+    <!-- Icono Opción 2 (Modo Oscuro) integrado en Base64 -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzFlMjkzYiIvPjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iMTUwIiBmaWxsPSIjM2I4MmY2Ii8+PGNpcmNsZSBjeD0iMTQwIiBjeT0iODAiIHI9IjI0IiBmaWxsPSIjZmZmZmZmIi8+PGNpcmNsZSBjeD0iMzcyIiBjeT0iODAiIHI9IjI0IiBmaWxsPSIjZmZmZmZmIi8+PGNpcmNsZSBjeD0iMTQwIiBjeT0iODAiIHI9IjE0IiBmaWxsPSIjMWU0MGFmIi8+PGNpcmNsZSBjeD0iMzcyIiBjeT0iODAiIHI9IjE0IiBmaWxsPSIjMWU0MGFmIi8+PHRleHQgeD0iMjU2IiB5PSIzOTAiIGZvbnQtZmFtaWx5PSJzeXN0ZW0tdWksIC1hcHBsZS1zeXN0ZW0sIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIwIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmZmZmIiBsZXR0ZXItc3BhY2luZz0iLTUiPk1EPC90ZXh0Pjwvc3ZnPg==">
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzFlMjkzYiIvPjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iMTUwIiBmaWxsPSIjM2I4MmY2Ii8+PGNpcmNsZSBjeD0iMTQwIiBjeT0iODAiIHI9IjI0IiBmaWxsPSIjZmZmZmZmIi8+PGNpcmNsZSBjeD0iMzcyIiBjeT0iODAiIHI9IjI0IiBmaWxsPSIjZmZmZmZmIi8+PGNpcmNsZSBjeD0iMTQwIiBjeT0iODAiIHI9IjE0IiBmaWxsPSIjMWU0MGFmIi8+PGNpcmNsZSBjeD0iMzcyIiBjeT0iODAiIHI9IjE0IiBmaWxsPSIjMWU0MGFmIi8+PHRleHQgeD0iMjU2IiB5PSIzOTAiIGZvbnQtZmFtaWx5PSJzeXN0ZW0tdWksIC1hcHBsZS1zeXN0ZW0sIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIwIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmZmZmIiBsZXR0ZXItc3BhY2luZz0iLTUiPk1EPC90ZXh0Pjwvc3ZnPg==">
-
-    <!-- Script invisible para compatibilidad de icono en iOS (convierte el SVG a PNG en memoria) -->
-    <script>
-        (function() {
-            var link = document.querySelector('link[rel="apple-touch-icon"]');
-            if (link) {
-                var img = new Image();
-                img.onload = function() {
-                    var canvas = document.createElement('canvas');
-                    canvas.width = 512;
-                    canvas.height = 512;
-                    var ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 512, 512);
-                    link.href = canvas.toDataURL('image/png');
-                };
-                img.src = link.href;
-            }
-        })();
-    </script>
 
     <!-- Librerías para PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Script para renderizar icono SVG a PNG en iOS al vuelo -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const canvas = document.createElement("canvas");
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext("2d");
+            const img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                const pngData = canvas.toDataURL("image/png");
+                let link = document.querySelector('link[rel="apple-touch-icon"]');
+                if (!link) {
+                    link = document.createElement('link');
+                    link.rel = 'apple-touch-icon';
+                    document.head.appendChild(link);
+                }
+                link.href = pngData;
+            };
+            img.src = document.querySelector('link[rel="apple-touch-icon"]').href;
+        });
+    </script>
     
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -72,7 +76,6 @@
             color: var(--text-main); 
             transition: background-color 0.3s ease, color 0.3s ease;
             font-size: 15px;
-            /* Prevenir zoom y comportamientos táctiles no deseados */
             touch-action: manipulation;
             -webkit-text-size-adjust: 100%;
         }
@@ -81,44 +84,20 @@
 
         /* PANTALLA DE LOGIN */
         #login-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-            padding: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; text-align: center; padding: 20px;
         }
         .login-card {
-            background: var(--bg-card);
-            padding: 30px 20px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 350px;
-            border: 1px solid var(--border-color);
+            background: var(--bg-card); padding: 30px 20px; border-radius: 16px;
+            box-shadow: var(--shadow); width: 100%; max-width: 350px; border: 1px solid var(--border-color);
         }
         .btn-google {
-            background: white;
-            color: #333;
-            border: 1px solid #ccc;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            cursor: pointer;
-            margin-bottom: 12px;
-            font-size: 15px;
+            background: white; color: #333; border: 1px solid #ccc; padding: 12px;
+            border-radius: 8px; font-weight: bold; display: flex; align-items: center;
+            justify-content: center; gap: 10px; width: 100%; cursor: pointer;
+            margin-bottom: 12px; font-size: 15px;
         }
-        .btn-guest {
-            background: var(--bg-body);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-        }
+        .btn-guest { background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color); }
 
         /* HEADER APP */
         .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 4px; }
@@ -137,11 +116,10 @@
         .top-cards .card { margin-bottom: 0; padding: 16px; text-align: center; border-top-width: 4px; }
         .card-extra { grid-column: 1 / -1; border-top-color: var(--success); }
         
-        /* Cambios en color de Negativas */
         .negative { border-top-color: #7e22ce; }
         .dark-mode .negative { border-top-color: #c084fc; }
-        
         .exceso { border-top-color: var(--warning); }
+        
         .card h3 { margin: 0 0 4px 0; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
         .card-extra h2 { font-size: 2.2rem; margin: 0; color: var(--success); font-weight: 800; }
         .card h2 { font-size: 1.6rem; margin: 0; font-weight: 800; }
@@ -157,12 +135,14 @@
         .item { border-bottom: 1px solid var(--border-color); padding: 16px 0; display: flex; justify-content: space-between; align-items: center; }
         .item:last-child { border-bottom: none; }
         .tipo { font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 12px; display: inline-block; margin-bottom: 6px; }
+        
         .verde { color: #047857; background: #d1fae5; }
         .rojo { color: #be123c; background: #ffe4e6; }
         .amarillo { color: #b45309; background: #fef3c7; }
         .azul { color: #1d4ed8; background: #dbeafe; }
         .morado { color: #7e22ce; background: #f3e8ff; }
         .amarillo-chillon { color: #422006; background: #fde047; }
+        
         .dark-mode .verde { color: #34d399; background: rgba(16, 185, 129, 0.15); }
         .dark-mode .rojo { color: #fb7185; background: rgba(225, 29, 72, 0.15); }
         .dark-mode .amarillo { color: #fbbf24; background: rgba(245, 158, 11, 0.15); }
@@ -178,31 +158,19 @@
         #mensaje { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: var(--bg-card); padding: 10px 24px; border-radius: 30px; display: none; z-index: 9999; font-weight: 600; }
 
         .btn-danger-outline {
-            background: transparent;
-            color: var(--danger);
-            border: 1px solid var(--danger);
-            padding: 12px;
-            font-size: 13px;
-            width: auto;
-            display: block;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
+            background: transparent; color: var(--danger); border: 1px solid var(--danger);
+            padding: 12px; font-size: 13px; width: auto; display: block; border-radius: 8px; cursor: pointer; font-weight: bold;
         }
-        .btn-danger-outline:hover {
-            background: var(--danger);
-            color: white;
-        }
+        .btn-danger-outline:hover { background: var(--danger); color: white; }
 
         /* Calendario */
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: 700; font-size: 14px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
         .calendar-day-name { font-size: 11px; color: var(--text-muted); font-weight: bold; margin-bottom: 8px;}
-        .calendar-day { padding: 8px 0; border-radius: 6px; cursor: pointer; font-size: 13px; border: 1px solid var(--border-color); background: var(--bg-body); transition: all 0.2s;}
-        @media (hover: hover) {
-            .calendar-day:hover { border-color: var(--primary); }
-        }
+        .calendar-day { padding: 8px 0; border-radius: 6px; cursor: pointer; font-size: 13px; border: 1px solid var(--border-color); background: var(--bg-body); transition: all 0.2s; position: relative;}
+        @media (hover: hover) { .calendar-day:hover { border-color: var(--primary); } }
         .calendar-day.empty { visibility: hidden; border: none; background: transparent; }
+        
         .cal-verde { background: #d1fae5; color: #047857; font-weight: bold; border-color: #047857;}
         .cal-rojo { background: #ffe4e6; color: #be123c; font-weight: bold; border-color: #be123c;}
         .cal-amarillo { background: #fef3c7; color: #b45309; font-weight: bold; border-color: #b45309;}
@@ -210,9 +178,11 @@
         .cal-morado { background: #f3e8ff; color: #7e22ce; font-weight: bold; border-color: #7e22ce;}
         .cal-amarillo-chillon { background: #fef08a; color: #713f12; font-weight: bold; border-color: #facc15;}
         .cal-finde { color: #3b82f6; font-weight: bold; }
-        .cal-hoy { border: 2px solid #3b82f6 !important; color: #3b82f6 !important; font-weight: 900 !important; }
         
-        /* Festivos en rojo */
+        /* HOY en el calendario */
+        .cal-hoy { border: 2px solid var(--primary) !important; color: var(--primary) !important; font-weight: 900 !important; }
+        .dark-mode .cal-hoy { border-color: #60a5fa !important; color: #60a5fa !important; }
+
         .festivo-con-registro { color: #be123c !important; font-weight: 900 !important; }
         
         .dark-mode .cal-verde { background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: #34d399;}
@@ -222,7 +192,6 @@
         .dark-mode .cal-morado { background: rgba(126, 34, 206, 0.2); color: #c084fc; border-color: #c084fc;}
         .dark-mode .cal-amarillo-chillon { background: rgba(250, 204, 21, 0.2); color: #fde047; border-color: #fde047;}
         .dark-mode .cal-finde { color: #60a5fa; }
-        .dark-mode .cal-hoy { border: 2px solid #60a5fa !important; color: #60a5fa !important; }
         .dark-mode .festivo-con-registro { color: #fb7185 !important; }
 
         /* Modales */
@@ -239,9 +208,7 @@
 <!-- PANTALLA DE LOGIN -->
 <div id="login-screen" style="display: none;">
     <div class="login-card">
-        <!-- Aviso recomendado azul -->
         <div style="color: var(--primary); font-size: 13px; font-weight: bold; margin-bottom: 16px; background: rgba(59, 130, 246, 0.1); padding: 8px; border-radius: 6px;">Se recomienda iniciar sesión con correo y contraseña</div>
-        
         <h2 style="margin-top:0">Control de Horas</h2>
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Inicia sesión para guardar tus registros en la nube.</p>
         
@@ -275,7 +242,6 @@
                 👤 Entrar como Invitado (Local)
             </button>
 
-            <!-- Recuperar contraseña al final -->
             <div style="margin-top: 24px;">
                 <a href="javascript:void(0)" onclick="recuperarPassword()" style="font-size: 13px; color: var(--primary); text-decoration: underline; font-weight: 600;">¿Has olvidado tu contraseña?</a>
             </div>
@@ -295,9 +261,7 @@
                 <label style="font-size: 13px;">Contraseña</label>
                 <input type="password" id="regPassInput" placeholder="******" style="height: 42px;">
             </div>
-
             <button class="btn-primary" style="margin-top: 0; width: 100%; padding: 10px; background: var(--success); margin-bottom: 16px;" onclick="registroEmailCompleto()">Crear Cuenta</button>
-
             <div style="margin-top: 16px;">
                 <a href="javascript:void(0)" onclick="mostrarLogin()" style="font-size: 13px; color: var(--text-muted); text-decoration: underline; font-weight: 600;">Volver a iniciar sesión</a>
             </div>
@@ -344,7 +308,6 @@
         <div id="seccion-formulario" style="display: none; margin-top: 16px;">
             <div class="form-group">
                 <label>Tipo de hora</label>
-                <!-- Se ha añadido onfocus y onclick para centrar la pantalla al abrir -->
                 <select id="tipo" onchange="toggleCamposVacaciones()" onfocus="setTimeout(() => this.parentElement.scrollIntoView({behavior: 'smooth', block: 'center'}), 150)" onclick="setTimeout(() => this.parentElement.scrollIntoView({behavior: 'smooth', block: 'center'}), 150)">
                     <option value="extra">➕ Extra (x1.75)</option>
                     <option value="compensacion">⚖️ Compensación (x1.0)</option>
@@ -363,7 +326,10 @@
             </div>
             <div class="form-group" id="grupo-horas">
                 <label>Horas</label>
-                <input type="number" id="horas" placeholder="Ej: 2.5" step="0.01">
+                <div style="display: flex; gap: 8px;">
+                    <input type="number" id="horas" placeholder="Ej: 2.5" step="0.01" style="flex: 1; min-width: 0;">
+                    <button type="button" onclick="toggleSigno()" style="flex-shrink: 0; width: 60px; height: 48px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Cambiar signo a negativo o positivo">+/-</button>
+                </div>
             </div>
             <div class="form-group" id="grupo-fecha">
                 <label>Fecha</label>
@@ -433,7 +399,6 @@
                 <button class="btn-icon" style="background: var(--warning); color: white; border: none; padding: 8px 14px; font-size: 13px;" onclick="exportarJSON()">📤 Exportar</button>
                 <button class="btn-icon" style="background: var(--primary); color: white; border: none; padding: 8px 14px; font-size: 13px;" onclick="abrirPersonalizacion()">🎨 Personalizar</button>
             </div>
-            
             <div style="display: flex; gap: 12px; justify-content: center;">
                 <button class="btn-danger-outline" style="margin: 0; flex: 1;" onclick="reiniciarAno()">Reiniciar Año</button>
             </div>
@@ -442,7 +407,7 @@
     
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarJSON(event)">
 
-    <!-- CRÉDITOS DENTRO DE LA APP (NO VISIBLES EN LOGIN) -->
+    <!-- CRÉDITOS DENTRO DE LA APP -->
     <div style="text-align: center; margin-top: 5px; margin-bottom: 30px; font-size: 12px; color: var(--text-muted); opacity: 0.7;">
         AVS v.4.6
     </div>
@@ -466,37 +431,30 @@
 <div id="modal-personalizar" class="modal-overlay">
     <div class="modal-content" style="text-align: left;">
         <h3 style="margin-top:0; text-align: center; font-size: 1.1rem;">🎨 Personalizar App</h3>
-        
         <div class="form-group">
             <label style="margin-bottom: 4px;">Color de Fondo (Claro)</label>
             <input type="color" id="colorFondo" style="height: 40px; padding: 2px; cursor: pointer;">
         </div>
-
         <div class="form-group">
             <label style="margin-bottom: 4px;">Color de Fondo (Oscuro)</label>
             <input type="color" id="colorFondoOscuro" style="height: 40px; padding: 2px; cursor: pointer;">
         </div>
-        
         <div class="form-group">
             <label style="margin-bottom: 4px;">Color de las Tarjetas</label>
             <input type="color" id="colorTarjeta" style="height: 40px; padding: 2px; cursor: pointer;">
         </div>
-
         <div class="form-group">
             <label style="margin-bottom: 4px;">Color de Texto (Letras y Números)</label>
             <input type="color" id="colorTexto" style="height: 40px; padding: 2px; cursor: pointer;">
         </div>
-        
         <div class="form-group">
             <label style="margin-bottom: 4px;">Transparencia de Tarjetas</label>
             <input type="range" id="opacidadTarjeta" min="0" max="1" step="0.05" value="1" style="height: auto; padding: 0; width: 100%;">
         </div>
-        
         <div class="form-group">
             <label style="margin-bottom: 4px;">Luz / Brillo Global</label>
             <input type="range" id="brilloApp" min="0.5" max="1.5" step="0.05" value="1" style="height: auto; padding: 0; width: 100%;">
         </div>
-        
         <div style="display: flex; gap: 8px; margin-top: 20px;">
             <button class="btn-primary" style="margin-top:0; flex: 1; background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color);" onclick="restablecerPersonalizacion()">Restablecer</button>
             <button class="btn-primary" style="margin-top:0; flex: 1; background: var(--success);" onclick="guardarPersonalizacion()">Aplicar</button>
@@ -534,17 +492,22 @@
     let isGuestMode = false;
     let idEdicion = null;
 
+    // --- FUNCIONES EXTRA ---
+    window.toggleSigno = () => {
+        const input = document.getElementById("horas");
+        let val = parseFloat(input.value);
+        if (!isNaN(val) && val !== 0) {
+            input.value = (val * -1).toString();
+        }
+    };
+
     // --- LÓGICA DE PERSONALIZACIÓN ---
     window.abrirPersonalizacion = () => {
         document.getElementById('modal-personalizar').style.display = 'flex';
         const isDark = document.body.classList.contains('dark-mode');
         const config = JSON.parse(localStorage.getItem('app_theme_config')) || {
-            bgColor: '#f8fafc',
-            bgColorDark: '#121212',
-            cardColor: isDark ? '#1e1e1e' : '#ffffff',
-            textColor: isDark ? '#e0e0e0' : '#1e293b',
-            opacity: 1,
-            brightness: 1
+            bgColor: '#f8fafc', bgColorDark: '#121212', cardColor: isDark ? '#1e1e1e' : '#ffffff',
+            textColor: isDark ? '#e0e0e0' : '#1e293b', opacity: 1, brightness: 1
         };
         document.getElementById('colorFondo').value = config.bgColor || '#f8fafc';
         document.getElementById('colorFondoOscuro').value = config.bgColorDark || '#121212';
@@ -554,15 +517,11 @@
         document.getElementById('brilloApp').value = config.brightness !== undefined ? config.brightness : 1;
     };
 
-    window.cerrarPersonalizacion = () => {
-        document.getElementById('modal-personalizar').style.display = 'none';
-    };
+    window.cerrarPersonalizacion = () => { document.getElementById('modal-personalizar').style.display = 'none'; };
 
     window.hexToRgba = (hex, alpha) => {
         if (!hex || !hex.startsWith('#')) return hex;
-        let r = parseInt(hex.slice(1, 3), 16),
-            g = parseInt(hex.slice(3, 5), 16),
-            b = parseInt(hex.slice(5, 7), 16);
+        let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     };
 
@@ -592,27 +551,15 @@
     window.aplicarTema = (config) => {
         if (!config) return;
         const isDark = document.body.classList.contains('dark-mode');
-        
-        if (isDark) {
-            if (config.bgColorDark) document.documentElement.style.setProperty('--bg-body', config.bgColorDark);
-        } else {
-            if (config.bgColor) document.documentElement.style.setProperty('--bg-body', config.bgColor);
-        }
-
-        if (config.cardColor) {
-            document.documentElement.style.setProperty('--bg-card', window.hexToRgba(config.cardColor, config.opacity !== undefined ? config.opacity : 1));
-        }
-        
-        if (config.textColor) {
-            document.documentElement.style.setProperty('--text-main', config.textColor);
-        }
-        
+        if (isDark) { if (config.bgColorDark) document.documentElement.style.setProperty('--bg-body', config.bgColorDark); } 
+        else { if (config.bgColor) document.documentElement.style.setProperty('--bg-body', config.bgColor); }
+        if (config.cardColor) document.documentElement.style.setProperty('--bg-card', window.hexToRgba(config.cardColor, config.opacity !== undefined ? config.opacity : 1));
+        if (config.textColor) document.documentElement.style.setProperty('--text-main', config.textColor);
         document.body.style.filter = `brightness(${config.brightness !== undefined ? config.brightness : 1})`;
     };
 
     const savedTheme = JSON.parse(localStorage.getItem('app_theme_config'));
     if (savedTheme) window.aplicarTema(savedTheme);
-
 
     // --- AUTENTICACIÓN ---
     const initAuth = async () => {
@@ -622,27 +569,17 @@
     };
     initAuth();
 
-    if (localStorage.getItem('isGuestMode') === 'true') {
-        setTimeout(() => window.loginAnonimo(), 100);
-    }
+    if (localStorage.getItem('isGuestMode') === 'true') setTimeout(() => window.loginAnonimo(), 100);
 
-    // Función para recuperar contraseña
     window.recuperarPassword = async () => {
         const email = document.getElementById("emailInput").value;
-        if (!email) { 
-            showModal("Por favor, escribe tu correo electrónico en el campo superior para enviarte el enlace de recuperación."); 
-            return; 
-        }
+        if (!email) { showModal("Por favor, escribe tu correo electrónico en el campo superior para enviarte el enlace de recuperación."); return; }
         try {
             await sendPasswordResetEmail(auth, email);
             showModal(`Se ha enviado un correo a ${email} con las instrucciones para restablecer tu contraseña. Revisa también tu carpeta de Spam.`);
         } catch (error) {
-            console.error(error);
-            if (error.code === 'auth/user-not-found') {
-                showModal("Ese correo no está registrado en el sistema.");
-            } else {
-                showModal("Error al enviar el correo: " + error.message);
-            }
+            if (error.code === 'auth/user-not-found') showModal("Ese correo no está registrado en el sistema.");
+            else showModal("Error al enviar el correo: " + error.message);
         }
     };
 
@@ -650,12 +587,8 @@
         const email = document.getElementById("emailInput").value;
         const pass = document.getElementById("passInput").value;
         if (!email || !pass) { showModal("Por favor, introduce email y contraseña."); return; }
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-        } catch (error) {
-            console.error(error);
-            showModal("Error al iniciar sesión. Revisa tus credenciales.");
-        }
+        try { await signInWithEmailAndPassword(auth, email, pass); } 
+        catch (error) { showModal("Error al iniciar sesión. Revisa tus credenciales."); }
     };
 
     window.mostrarRegistro = () => {
@@ -678,19 +611,12 @@
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
             await updateProfile(userCredential.user, { displayName: nombre });
-            
             document.getElementById('user-name-display').innerText = `👋 Hola, ${nombre}`;
             showToast("Cuenta creada con éxito");
-            
         } catch (error) {
-            console.error(error);
-            if (error.code === 'auth/email-already-in-use') {
-                showModal("Ese correo ya está registrado.");
-            } else if (error.code === 'auth/weak-password') {
-                showModal("La contraseña debe tener al menos 6 caracteres.");
-            } else {
-                showModal("Error al registrar: " + error.message);
-            }
+            if (error.code === 'auth/email-already-in-use') showModal("Ese correo ya está registrado.");
+            else if (error.code === 'auth/weak-password') showModal("La contraseña debe tener al menos 6 caracteres.");
+            else showModal("Error al registrar: " + error.message);
         }
     };
 
@@ -699,10 +625,7 @@
             const provider = new GoogleAuthProvider();
             provider.setCustomParameters({ prompt: 'select_account' });
             await signInWithPopup(auth, provider);
-        } catch (error) {
-            console.error(error);
-            showModal("Error al conectar con Google. Usa el modo Invitado si el problema persiste.");
-        }
+        } catch (error) { showModal("Error al conectar con Google. Usa el modo Invitado si el problema persiste."); }
     };
 
     window.loginAnonimo = () => {
@@ -735,10 +658,8 @@
             currentUser = user;
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-container').style.display = 'block';
-            
             const nombre = user.isAnonymous ? "Invitado (Temporal)" : (user.displayName || user.email);
             document.getElementById('user-name-display').innerText = `👋 Hola, ${nombre}`;
-            
             cargarDatosNube();
         } else {
             currentUser = null;
@@ -755,14 +676,11 @@
     window.toggleCamposVacaciones = () => {
         const isVac = document.getElementById("tipo").value === "vacaciones";
         const isEditing = idEdicion !== null;
-        
         if (isVac && !isEditing) {
             document.getElementById("grupo-semana").style.display = "block";
             document.getElementById("grupo-fecha").style.display = "none";
             document.getElementById("grupo-horas").style.display = "none";
-            if (document.getElementById("semana").options.length === 0) {
-                window.generarSemanas();
-            }
+            if (document.getElementById("semana").options.length === 0) window.generarSemanas();
         } else {
             document.getElementById("grupo-semana").style.display = "none";
             document.getElementById("grupo-fecha").style.display = "block";
@@ -781,7 +699,6 @@
 
         for (let weekNum = 1; weekNum <= 53; weekNum++) {
             if (weekNum > 52 && d.getMonth() === 0 && d.getDate() > 4) break; 
-            
             const startStr = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
             let dEnd = new Date(d);
             dEnd.setDate(dEnd.getDate() + 6);
@@ -791,15 +708,12 @@
             opt.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
             opt.text = `Semana ${weekNum} (${startStr} - ${endStr})`;
             select.appendChild(opt);
-            
             d.setDate(d.getDate() + 7);
         }
     };
 
-    // --- BASE DE DATOS (FIRESTORE) ---
     function cargarDatosNube() {
         if (!currentUser) return;
-        
         if (isGuestMode) {
             document.getElementById("lista-cargando").style.display = "block";
             const data = localStorage.getItem('registros_invitado');
@@ -811,15 +725,12 @@
         }
 
         const ref = collection(db, 'artifacts', appIdStr, 'users', currentUser.uid, 'registros');
-        
         document.getElementById("lista-cargando").style.display = "block";
         document.getElementById("lista").innerHTML = "";
 
         unsubscribeData = onSnapshot(ref, (snapshot) => {
             registrosLocales = [];
-            snapshot.forEach(docSnap => {
-                registrosLocales.push({ ...docSnap.data(), id: docSnap.id });
-            });
+            snapshot.forEach(docSnap => { registrosLocales.push({ ...docSnap.data(), id: docSnap.id }); });
             registrosLocales.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
             document.getElementById("lista-cargando").style.display = "none";
             renderizarUI();
@@ -848,15 +759,7 @@
                 let currentD = new Date(startD);
                 currentD.setDate(startD.getDate() + i);
                 const fStr = `${currentD.getFullYear()}-${String(currentD.getMonth()+1).padStart(2, '0')}-${String(currentD.getDate()).padStart(2, '0')}`;
-                
-                newRecords.push({
-                    horasCalculadas: 0,
-                    horasOriginales: 0,
-                    desc: desc,
-                    fecha: fStr,
-                    tipoOriginal: "vacaciones",
-                    timestamp: Date.now() + i
-                });
+                newRecords.push({ horasCalculadas: 0, horasOriginales: 0, desc: desc, fecha: fStr, tipoOriginal: "vacaciones", timestamp: Date.now() + i });
             }
 
             if (isGuestMode) {
@@ -873,15 +776,10 @@
 
             try {
                 const refCol = collection(db, 'artifacts', appIdStr, 'users', currentUser.uid, 'registros');
-                for(let nr of newRecords) {
-                    await addDoc(refCol, nr);
-                }
+                for(let nr of newRecords) await addDoc(refCol, nr);
                 showToast("Semana de vacaciones guardada en la nube");
                 cancelarEdicion();
-            } catch (error) {
-                console.error(error);
-                showModal("Error al guardar en la nube.");
-            }
+            } catch (error) { showModal("Error al guardar en la nube."); }
             return;
         }
 
@@ -893,9 +791,8 @@
         if (!currentUser) { showModal("Debes iniciar sesión."); return; }
 
         let factor = 1.0;
-        if (tipoInput === "negativa_empresa") {
-            factor = 1 / 1.5;
-        } else if (hInRaw > 0) {
+        if (tipoInput === "negativa_empresa") factor = 1 / 1.5;
+        else if (hInRaw > 0) {
             if (tipoInput === "extra") factor = 1.75;
             else if (tipoInput === "festiva") factor = 2.25;
             else if (tipoInput === "nocturna") factor = 2.0;
@@ -904,14 +801,7 @@
         const hOriginal = hInRaw;
         const hCalculada = hInRaw * factor;
 
-        const nuevoRegistro = {
-            horasCalculadas: hCalculada,
-            horasOriginales: hOriginal,
-            desc: desc,
-            fecha: fecha,
-            tipoOriginal: tipoInput,
-            timestamp: Date.now()
-        };
+        const nuevoRegistro = { horasCalculadas: hCalculada, horasOriginales: hOriginal, desc: desc, fecha: fecha, tipoOriginal: tipoInput, timestamp: Date.now() };
 
         if (idEdicion) {
             const regLocal = registrosLocales.find(r => r.id === idEdicion);
@@ -921,17 +811,13 @@
         if (isGuestMode) {
             if (idEdicion) {
                 const index = registrosLocales.findIndex(r => r.id === idEdicion);
-                if (index !== -1) {
-                    nuevoRegistro.id = idEdicion;
-                    registrosLocales[index] = nuevoRegistro;
-                }
+                if (index !== -1) { nuevoRegistro.id = idEdicion; registrosLocales[index] = nuevoRegistro; }
                 showToast("Registro actualizado localmente");
             } else {
                 nuevoRegistro.id = Date.now().toString() + Math.random().toString(36).substring(2, 7);
                 registrosLocales.push(nuevoRegistro);
                 showToast("Guardado en local");
             }
-            
             localStorage.setItem('registros_invitado', JSON.stringify(registrosLocales));
             cancelarEdicion();
             cargarDatosNube();
@@ -949,14 +835,10 @@
                 showToast("Guardado en la nube");
             }
             cancelarEdicion();
-        } catch (error) {
-            console.error(error);
-            showModal("Error al guardar en la nube.");
-        }
+        } catch (error) { showModal("Error al guardar en la nube."); }
     };
 
     window.editarRegistro = (id) => {
-        // Cerrar modal si está abierto
         document.getElementById("customModal").style.display = "none";
         mCb = null;
 
@@ -974,15 +856,9 @@
         document.getElementById("btnCancelarEdicion").style.display = "block";
         
         window.toggleCamposVacaciones();
-        
-        // Abrir formulario si estaba cerrado
         const sec = document.getElementById("seccion-formulario");
-        if (sec.style.display === "none") {
-            toggleFormulario();
-        } else {
-            // Si ya estaba abierto, hacer scroll suave al formulario
-            document.getElementById("card-nuevo-registro").scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if (sec.style.display === "none") toggleFormulario();
+        else document.getElementById("card-nuevo-registro").scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
     window.cancelarEdicion = () => {
@@ -996,19 +872,12 @@
     };
 
     window.borrarRegistro = (docIdsStr) => {
-        // Cerrar el modal actual si estamos borrando desde el calendario
         document.getElementById("customModal").style.display = "none";
-
-        // Pequeño delay para que no se pisen los modales
         setTimeout(() => {
             const docIds = docIdsStr.split(',');
-            const msg = docIds.length > 1 
-                ? (isGuestMode ? "¿Borrar toda la semana de vacaciones?" : "¿Borrar toda la semana de la nube?")
-                : (isGuestMode ? "¿Borrar este registro?" : "¿Borrar este registro de la nube?");
-
+            const msg = docIds.length > 1 ? (isGuestMode ? "¿Borrar toda la semana de vacaciones?" : "¿Borrar toda la semana de la nube?") : (isGuestMode ? "¿Borrar este registro?" : "¿Borrar este registro de la nube?");
             showModal(msg, true, async () => {
                 if (!currentUser) return;
-
                 if (isGuestMode) {
                     registrosLocales = registrosLocales.filter(r => !docIds.includes(r.id));
                     localStorage.setItem('registros_invitado', JSON.stringify(registrosLocales));
@@ -1016,16 +885,13 @@
                     cargarDatosNube();
                     return;
                 }
-
                 try {
                     for(let id of docIds) {
                         const docRef = doc(db, 'artifacts', appIdStr, 'users', currentUser.uid, 'registros', id);
                         await deleteDoc(docRef);
                     }
                     showToast(docIds.length > 1 ? "Semana eliminada" : "Registro eliminado");
-                } catch (error) {
-                    showModal("Error al borrar.");
-                }
+                } catch (error) { showModal("Error al borrar."); }
             });
         }, 100);
     };
@@ -1036,7 +902,6 @@
             setTimeout(() => {
                 showModal(`⚠️ ESTA ACCIÓN NO SE PUEDE DESHACER. ¿Estás absolutamente seguro?`, true, async () => {
                     if (!currentUser) return;
-
                     if (isGuestMode) {
                         const yearStr = year.toString();
                         registrosLocales = registrosLocales.filter(item => !item.fecha.startsWith(yearStr));
@@ -1045,20 +910,15 @@
                         cargarDatosNube();
                         return;
                     }
-
                     try {
                         const yearStr = year.toString();
                         const registrosBorrables = registrosLocales.filter(item => item.fecha.startsWith(yearStr));
-                        
                         for (const reg of registrosBorrables) {
                             const docRef = doc(db, 'artifacts', appIdStr, 'users', currentUser.uid, 'registros', reg.id);
                             await deleteDoc(docRef);
                         }
                         showToast("Registros del año borrados");
-                    } catch (error) {
-                        console.error(error);
-                        showModal("Error al borrar los registros del año.");
-                    }
+                    } catch (error) { showModal("Error al borrar los registros del año."); }
                 });
             }, 300);
         });
@@ -1087,15 +947,10 @@
         const sec = document.getElementById("seccion-formulario");
         const icono = document.getElementById("icono-formulario");
         if (sec.style.display === "none") {
-            posScroll.form = window.scrollY; 
-            sec.style.display = "block";
-            icono.innerText = "➖";
-            setTimeout(() => {
-                document.getElementById("card-nuevo-registro").scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 50);
+            posScroll.form = window.scrollY; sec.style.display = "block"; icono.innerText = "➖";
+            setTimeout(() => document.getElementById("card-nuevo-registro").scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
         } else {
-            sec.style.display = "none";
-            icono.innerText = "➕";
+            sec.style.display = "none"; icono.innerText = "➕";
             setTimeout(() => window.scrollTo({ top: posScroll.form, behavior: 'smooth' }), 50); 
         }
     };
@@ -1104,15 +959,10 @@
         const sec = document.getElementById("seccion-historial");
         const icono = document.getElementById("icono-historial");
         if (sec.style.display === "none") {
-            posScroll.hist = window.scrollY; 
-            sec.style.display = "block";
-            icono.innerText = "➖";
-            setTimeout(() => {
-                document.getElementById("card-historial").scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 50);
+            posScroll.hist = window.scrollY; sec.style.display = "block"; icono.innerText = "➖";
+            setTimeout(() => document.getElementById("card-historial").scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
         } else {
-            sec.style.display = "none";
-            icono.innerText = "➕";
+            sec.style.display = "none"; icono.innerText = "➕";
             setTimeout(() => window.scrollTo({ top: posScroll.hist, behavior: 'smooth' }), 50); 
         }
     };
@@ -1121,16 +971,11 @@
         const sec = document.getElementById("seccion-calendario");
         const icono = document.getElementById("icono-calendario");
         if (sec.style.display === "none") {
-            posScroll.cal = window.scrollY; 
-            sec.style.display = "block";
-            icono.innerText = "➖";
+            posScroll.cal = window.scrollY; sec.style.display = "block"; icono.innerText = "➖";
             renderizarCalendario();
-            setTimeout(() => {
-                document.getElementById("card-calendario").scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 50);
+            setTimeout(() => document.getElementById("card-calendario").scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
         } else {
-            sec.style.display = "none";
-            icono.innerText = "➕";
+            sec.style.display = "none"; icono.innerText = "➕";
             setTimeout(() => window.scrollTo({ top: posScroll.cal, behavior: 'smooth' }), 50); 
         }
     };
@@ -1139,15 +984,10 @@
         const sec = document.getElementById("seccion-ajustes");
         const icono = document.getElementById("icono-ajustes");
         if (sec.style.display === "none") {
-            posScroll.ajustes = window.scrollY; 
-            sec.style.display = "block";
-            icono.innerText = "➖";
-            setTimeout(() => {
-                document.getElementById("card-ajustes").scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 50);
+            posScroll.ajustes = window.scrollY; sec.style.display = "block"; icono.innerText = "➖";
+            setTimeout(() => document.getElementById("card-ajustes").scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
         } else {
-            sec.style.display = "none";
-            icono.innerText = "➕";
+            sec.style.display = "none"; icono.innerText = "➕";
             setTimeout(() => window.scrollTo({ top: posScroll.ajustes, behavior: 'smooth' }), 50); 
         }
     };
@@ -1157,81 +997,45 @@
         const header = document.getElementById(`mes-header-${mesId}`);
         const icono = document.getElementById(`mes-icono-${mesId}`);
         if (div.style.display === "none") {
-            posScrollMeses[mesId] = window.scrollY;
-            div.style.display = "block";
-            icono.innerText = "▼";
-            setTimeout(() => {
-                header.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 50);
+            posScrollMeses[mesId] = window.scrollY; div.style.display = "block"; icono.innerText = "▼";
+            setTimeout(() => header.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
         } else {
-            div.style.display = "none";
-            icono.innerText = "▶";
-            setTimeout(() => {
-                window.scrollTo({ top: posScrollMeses[mesId], behavior: 'smooth' });
-            }, 50);
+            div.style.display = "none"; icono.innerText = "▶";
+            setTimeout(() => window.scrollTo({ top: posScrollMeses[mesId], behavior: 'smooth' }), 50);
         }
     };
 
-    window.cambiarMes = (offset) => {
-        currentCalDate.setMonth(currentCalDate.getMonth() + offset);
-        renderizarCalendario();
-    };
+    window.cambiarMes = (offset) => { currentCalDate.setMonth(currentCalDate.getMonth() + offset); renderizarCalendario(); };
 
     function obtenerFestivo(fechaStr) {
         const [year, month, day] = fechaStr.split('-');
         const md = `${month}-${day}`;
         const festivosFijos = {
-            '01-01': 'Año Nuevo',
-            '01-06': 'Epifanía del Señor',
-            '05-01': 'Fiesta del Trabajo',
-            '05-25': 'Lunes de Pascua',
-            '06-24': 'San Juan',
-            '08-15': 'Asunción de la Virgen',
-            '09-11': 'Diada Nacional de Cataluña',
-            '09-24': 'La Mercè',
-            '10-12': 'Fiesta Nacional de España',
-            '11-01': 'Todos los Santos',
-            '12-06': 'Día de la Constitución Española',
-            '12-08': 'Inmaculada Concepción',
-            '12-25': 'Natividad del Señor',
-            '12-26': 'San Esteban'
+            '01-01': 'Año Nuevo', '01-06': 'Epifanía del Señor', '05-01': 'Fiesta del Trabajo',
+            '05-25': 'Lunes de Pascua', '06-24': 'San Juan', '08-15': 'Asunción de la Virgen',
+            '09-11': 'Diada Nacional de Cataluña', '09-24': 'La Mercè', '10-12': 'Fiesta Nacional de España',
+            '11-01': 'Todos los Santos', '12-06': 'Día de la Constitución Española',
+            '12-08': 'Inmaculada Concepción', '12-25': 'Natividad del Señor', '12-26': 'San Esteban'
         };
         return festivosFijos[md] || null;
     }
 
-    // Función global para redirigir desde el calendario al nuevo registro
     window.abrirNuevoRegistroDesdeCalendario = (fechaStr) => {
-        // Cerrar modal
         document.getElementById("customModal").style.display = "none";
-        
-        // Colapsar calendario visualmente
         const secCal = document.getElementById("seccion-calendario");
         const iconoCal = document.getElementById("icono-calendario");
-        if(secCal.style.display !== "none") {
-            secCal.style.display = "none";
-            iconoCal.innerText = "➕";
-        }
-
-        // Expandir formulario si no está abierto
+        if(secCal.style.display !== "none") { secCal.style.display = "none"; iconoCal.innerText = "➕"; }
         const secForm = document.getElementById("seccion-formulario");
-        if (secForm.style.display === "none") {
-            toggleFormulario();
-        }
-        
+        if (secForm.style.display === "none") toggleFormulario();
         window.toggleCamposVacaciones();
         
-        // Poner fecha y hacer scroll
         document.getElementById("fecha").value = fechaStr;
         setTimeout(() => {
             document.getElementById("card-nuevo-registro").scrollIntoView({ behavior: 'smooth', block: 'start' });
-            // Resaltar brevemente el campo fecha
             const inputFecha = document.getElementById("fecha");
             inputFecha.style.borderColor = "var(--primary)";
             inputFecha.style.boxShadow = "0 0 0 2px rgba(59,130,246,0.3)";
-            setTimeout(() => {
-                inputFecha.style.borderColor = "var(--border-color)";
-                inputFecha.style.boxShadow = "none";
-            }, 1500);
+            setTimeout(() => { inputFecha.style.borderColor = "var(--border-color)"; inputFecha.style.boxShadow = "none"; }, 1500);
         }, 100);
     };
 
@@ -1239,21 +1043,21 @@
         const registrosDia = registrosLocales.filter(r => r.fecha === fechaStr);
         const nombreFestivo = obtenerFestivo(fechaStr);
         
-        let htmlContent = "";
-
-        // Indicador de día actual
         const hoy = new Date();
-        const todayStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
-        if (fechaStr === todayStr) {
+        const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+        const esHoy = (fechaStr === hoyStr);
+
+        let htmlContent = "";
+        
+        if (esHoy) {
             htmlContent += `<div style="margin-bottom: 15px; color: var(--primary); font-weight: bold; background: rgba(59, 130, 246, 0.1); padding: 8px; border-radius: 6px;">📍 HOY</div>`;
         }
-        
+
         if (nombreFestivo) {
             htmlContent += `<div style="margin-bottom: 15px; color: #be123c; font-weight: bold; background: rgba(225, 29, 72, 0.1); padding: 8px; border-radius: 6px;">🎉 FESTIVO: ${nombreFestivo}</div>`;
         }
         
         if (registrosDia.length > 0) {
-            // Calcular horas consumidas para saber si está tachado (caducidad)
             let horasConsumidas = 0;
             registrosLocales.forEach(item => {
                 if (item.horasOriginales < 0 && item.tipoOriginal !== "negativa" && item.tipoOriginal !== "exceso" && item.tipoOriginal !== "negativa_empresa") {
@@ -1263,22 +1067,16 @@
                 }
             });
 
-            let extraPositivas = registrosLocales.filter(reg => reg.tipoOriginal === "extra" && reg.horasOriginales > 0)
-                .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-
+            let extraPositivas = registrosLocales.filter(reg => reg.tipoOriginal === "extra" && reg.horasOriginales > 0).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
             let idsTachados = new Set();
             for (let reg of extraPositivas) {
-                if (horasConsumidas >= (reg.horasCalculadas - 0.05)) {
-                    idsTachados.add(reg.id);
-                    horasConsumidas -= reg.horasCalculadas;
-                } else {
-                    horasConsumidas -= reg.horasCalculadas;
-                }
+                if (horasConsumidas >= (reg.horasCalculadas - 0.05)) { idsTachados.add(reg.id); horasConsumidas -= reg.horasCalculadas; } 
+                else { horasConsumidas -= reg.horasCalculadas; }
             }
 
             registrosDia.forEach(r => {
                 let safeDesc = r.desc.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                if (safeDesc === "-") safeDesc = ""; // Limpiar guion por defecto
+                if (safeDesc === "-") safeDesc = ""; 
                 
                 let docId = r.id;
                 let tipoLabel = r.tipoOriginal === 'negativa_empresa' ? 'NEGATIVAS OF.EMPRESA' : r.tipoOriginal.toUpperCase();
@@ -1287,26 +1085,17 @@
                 if (r.tipoOriginal === 'vacaciones') {
                     const wy = window.getWeekAndYear(r.fecha);
                     const sameWeekIds = registrosLocales.filter(x => x.tipoOriginal === 'vacaciones' && window.getWeekAndYear(x.fecha).year === wy.year && window.getWeekAndYear(x.fecha).week === wy.week).map(x => x.id);
-                    if (sameWeekIds.length > 0) {
-                        docId = sameWeekIds.join(',');
-                        tipoLabel = `VACACIONES SEMANA ${wy.week}`;
-                        hideEdit = true;
-                    }
+                    if (sameWeekIds.length > 0) { docId = sameWeekIds.join(','); tipoLabel = `VACACIONES SEMANA ${wy.week}`; hideEdit = true; }
                 }
 
-                // Lógica de caducidad SOLO para extras
                 let badgeVence = '';
                 if (r.tipoOriginal === "extra" && r.horasOriginales > 0) {
                     const fParts = r.fecha.split('-');
                     const f = new Date(fParts[0], fParts[1] - 1, fParts[2]); 
                     let c = new Date(f.getFullYear(), f.getMonth() + 4, 1);
                     let venceStr = c.toLocaleString('es-ES', { month: 'short', year: '2-digit' });
-                    
-                    if (idsTachados.has(r.id)) {
-                        badgeVence = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 8px; font-weight: 600; text-decoration: line-through; opacity: 0.6;">⏳ Caduca: ${venceStr}</span>`;
-                    } else {
-                        badgeVence = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 8px; font-weight: 600;">⏳ Caduca: ${venceStr}</span>`;
-                    }
+                    if (idsTachados.has(r.id)) badgeVence = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 8px; font-weight: 600; text-decoration: line-through; opacity: 0.6;">⏳ Caduca: ${venceStr}</span>`;
+                    else badgeVence = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 8px; font-weight: 600;">⏳ Caduca: ${venceStr}</span>`;
                 }
                 
                 const colors = { extra: 'verde', compensacion: 'azul', festiva: 'verde', nocturna: 'verde', negativa: 'morado', exceso: 'amarillo', inet: 'verde', vacaciones: 'amarillo-chillon', negativa_empresa: 'morado' };
@@ -1315,19 +1104,15 @@
 <div style="flex: 1; padding-right: 12px; text-align: left;">
 <span class="tipo ${colors[r.tipoOriginal]}">${tipoLabel}</span>${badgeVence}<br>
 ${!hideEdit ? `<b style="font-size: 19px;">${r.horasOriginales}h</b> <span style="font-size: 15px; color: var(--text-muted);">(${r.horasCalculadas.toFixed(2)}h)</span><br>` : ''}
-<div style="margin-top:8px; font-size: 16px; color: var(--text-main);">
-<b>Notas:</b> <span style="color: var(--text-muted);">${safeDesc}</span>
-</div>
+<div style="margin-top:8px; font-size: 16px; color: var(--text-main);"><b>Notas:</b> <span style="color: var(--text-muted);">${safeDesc}</span></div>
 </div>
 <div style="display: flex; flex-direction: column; gap: 8px; min-width: 95px;">
 <button class="editar-btn" style="background: rgba(16, 185, 129, 0.1); color: var(--success); font-weight: bold; padding: 8px 6px;" onclick="abrirNuevoRegistroDesdeCalendario('${fechaStr}')">Añadir Reg.</button>
 ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Editar</button>` : ''}
 <button class="borrar-btn" onclick="borrarRegistro('${docId}')">Borrar</button>
-</div>
-</div>`;
+</div></div>`;
             });
         } else {
-            // Diseño para día vacío
             htmlContent += `<div style="padding: 10px 0; text-align: left; color: var(--text-muted); font-size: 16px; margin-left: -8px;">
 <p style="margin-top:0;">No hay notas ni horas registradas en este día.</p>
 <button class="btn-primary" style="background: var(--success); width: 100%; margin-top: 10px; padding: 12px;" onclick="abrirNuevoRegistroDesdeCalendario('${fechaStr}')">➕ Añadir Registro</button>
@@ -1345,6 +1130,8 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         
         const year = currentCalDate.getFullYear();
         const month = currentCalDate.getMonth();
+        const hoy = new Date();
+        const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
         
         document.getElementById("calendario-mes").innerText = new Date(year, month).toLocaleString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
             
@@ -1353,9 +1140,7 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         
-        for (let i = 0; i < startDay; i++) {
-            cont.innerHTML += `<div class="calendar-day empty"></div>`;
-        }
+        for (let i = 0; i < startDay; i++) cont.innerHTML += `<div class="calendar-day empty"></div>`;
         
         for (let d = 1; d <= daysInMonth; d++) {
             const dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -1365,10 +1150,7 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
             let colorClass = "";
             let tieneRegistros = false;
 
-            if (nombreFestivo) {
-                colorClass = "cal-rojo";
-                tieneRegistros = true;
-            }
+            if (nombreFestivo) { colorClass = "cal-rojo"; tieneRegistros = true; }
             
             if (registrosDia.length > 0) {
                 const tipo = registrosDia[0].tipoOriginal;
@@ -1377,27 +1159,16 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
                 else if (tipo === 'compensacion') colorClass = "cal-azul";
                 else if (tipo === 'vacaciones') colorClass = "cal-amarillo-chillon";
                 else colorClass = "cal-verde"; 
-                
-                if (nombreFestivo) {
-                    colorClass += " festivo-con-registro";
-                }
-                
+                if (nombreFestivo) colorClass += " festivo-con-registro";
                 tieneRegistros = true;
             }
             
             const dayOfWeek = new Date(year, month, d).getDay();
-            if (!tieneRegistros && (dayOfWeek === 0 || dayOfWeek === 6)) {
-                colorClass = "cal-finde";
-            }
+            if (!tieneRegistros && (dayOfWeek === 0 || dayOfWeek === 6)) colorClass = "cal-finde";
             
-            // Resaltar día de hoy
-            const hoy = new Date();
-            const todayStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
-            if (dateStr === todayStr) {
-                colorClass += " cal-hoy";
-            }
+            // Resaltar día actual (HOY)
+            if (dateStr === hoyStr) colorClass += " cal-hoy";
             
-            // SIEMPRE asignamos el evento onclick ahora, pasando si tiene o no registros
             cont.innerHTML += `<div class="calendar-day ${colorClass}" onclick="clickDiaCalendario('${dateStr}', ${tieneRegistros})">${d}</div>`;
         }
     }
@@ -1412,7 +1183,6 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         
         const filter = document.getElementById("buscador").value.toLowerCase();
         
-        // 1. Calculamos las horas consumidas (cualquier registro con valor negativo, excepto negativa y exceso)
         let horasConsumidas = 0;
         registrosLocales.forEach(item => {
             if (item.horasOriginales < 0 && item.tipoOriginal !== "negativa" && item.tipoOriginal !== "exceso" && item.tipoOriginal !== "negativa_empresa") {
@@ -1422,24 +1192,14 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
             }
         });
 
-        // 2. Obtenemos las horas extra positivas y las ordenamos desde la más antigua a la más nueva
-        let extraPositivas = registrosLocales.filter(r => r.tipoOriginal === "extra" && r.horasOriginales > 0)
-            .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-
-        // 3. Cruzamos las horas consumidas con las extras más antiguas
+        let extraPositivas = registrosLocales.filter(r => r.tipoOriginal === "extra" && r.horasOriginales > 0).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
         let idsTachados = new Set();
         for (let r of extraPositivas) {
-            if (horasConsumidas >= (r.horasCalculadas - 0.05)) { // Solo tacha si se ha consumido entera (margen de 0.05 por decimales)
-                idsTachados.add(r.id);
-                horasConsumidas -= r.horasCalculadas;
-            } else {
-                // Si sobra saldo vivo, restamos lo consumido y frenamos
-                horasConsumidas -= r.horasCalculadas;
-            }
+            if (horasConsumidas >= (r.horasCalculadas - 0.05)) { idsTachados.add(r.id); horasConsumidas -= r.horasCalculadas; } 
+            else { horasConsumidas -= r.horasCalculadas; }
         }
 
         const meses = {};
-        
         let processedLocales = [];
         let vacGroups = {};
 
@@ -1450,29 +1210,17 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
                 if (!vacGroups[key]) vacGroups[key] = { items: [], ids: [] };
                 vacGroups[key].items.push(item);
                 vacGroups[key].ids.push(item.id);
-            } else {
-                processedLocales.push(item);
-            }
+            } else { processedLocales.push(item); }
         });
 
         Object.keys(vacGroups).forEach(k => {
             const g = vacGroups[k];
             g.items.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-            const startItem = g.items[0];
-            const endItem = g.items[g.items.length-1];
-            
-            const sf = new Date(startItem.fecha);
-            const ef = new Date(endItem.fecha);
+            const startItem = g.items[0], endItem = g.items[g.items.length-1];
+            const sf = new Date(startItem.fecha), ef = new Date(endItem.fecha);
             const sfFmt = `${String(sf.getDate()).padStart(2,'0')}/${String(sf.getMonth()+1).padStart(2,'0')}`;
             const efFmt = `${String(ef.getDate()).padStart(2,'0')}/${String(ef.getMonth()+1).padStart(2,'0')}/${ef.getFullYear()}`;
-            
-            processedLocales.push({
-                ...startItem,
-                id: g.ids.join(','),
-                isGroupedVacation: true,
-                weekLabel: k.split('-W')[1],
-                fFmtStr: `${sfFmt} - ${efFmt}`,
-            });
+            processedLocales.push({ ...startItem, id: g.ids.join(','), isGroupedVacation: true, weekLabel: k.split('-W')[1], fFmtStr: `${sfFmt} - ${efFmt}` });
         });
         
         processedLocales.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
@@ -1495,56 +1243,35 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
             const mKey = `${f.getFullYear()}-${String(f.getMonth()+1).padStart(2,'0')}`;
             if (!meses[mKey]) meses[mKey] = { label: mesNombre, items: [] };
             
-            let venceStr = "";
-            let tachado = false;
-            
-            // Lógica de caducidad SOLO para extras en la lista
+            let venceStr = "", tachado = false;
             if (item.tipoOriginal === "extra" && item.horasOriginales > 0) {
                 let c = new Date(f.getFullYear(), f.getMonth() + 4, 1);
                 venceStr = c.toLocaleString('es-ES', { month: 'short', year: '2-digit' });
-                
-                // Si el ID está en el set, significa que fue calendarizado (consumido)
-                if (idsTachados.has(item.id)) {
-                    tachado = true;
-                }
+                if (idsTachados.has(item.id)) tachado = true;
             }
             meses[mKey].items.push({ ...item, fFmt, venceStr, tachado });
         });
 
-        if(Object.keys(meses).length === 0 && registrosLocales.length > 0) {
-            cont.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No hay coincidencias.</div>`;
-        } else if (registrosLocales.length === 0) {
-            cont.innerHTML = `<div style="text-align:center; padding: 30px; color: var(--text-muted);">Aún no tienes registros.</div>`;
-        }
+        if(Object.keys(meses).length === 0 && registrosLocales.length > 0) cont.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No hay coincidencias.</div>`;
+        else if (registrosLocales.length === 0) cont.innerHTML = `<div style="text-align:center; padding: 30px; color: var(--text-muted);">Aún no tienes registros.</div>`;
 
         Object.keys(meses).sort((a,b) => b.localeCompare(a)).forEach((k, index) => {
-            const m = meses[k];
-            const isFiltering = filter !== "";
-            // MODIFICADO: isExpanded ahora solo es true si se está filtrando (buscador activo)
-            const isExpanded = isFiltering; 
-            const displayStyle = isExpanded ? 'block' : 'none';
-            const iconStr = isExpanded ? '▼' : '▶';
+            const m = meses[k], isFiltering = filter !== "", isExpanded = isFiltering; 
+            const displayStyle = isExpanded ? 'block' : 'none', iconStr = isExpanded ? '▼' : '▶';
 
             let mesHTML = `<div class="mes-titulo" id="mes-header-${k}" onclick="toggleMes('${k}')">
-                <span style="text-transform: capitalize;">${m.label} ${k.split('-')[0]}</span>
-                <span id="mes-icono-${k}" style="font-size: 13px;">${iconStr}</span>
-            </div>`;
-            
-            mesHTML += `<div id="mes-items-${k}" style="display: ${displayStyle}; padding-top: 8px;">`;
+                <span style="text-transform: capitalize;">${m.label} ${k.split('-')[0]}</span><span id="mes-icono-${k}" style="font-size: 13px;">${iconStr}</span>
+            </div><div id="mes-items-${k}" style="display: ${displayStyle}; padding-top: 8px;">`;
 
             m.items.forEach(i => {
                 const colors = { extra: 'verde', compensacion: 'azul', festiva: 'verde', nocturna: 'verde', negativa: 'morado', exceso: 'amarillo', inet: 'verde', vacaciones: 'amarillo-chillon', negativa_empresa: 'morado' };
-                
                 const desc = i.desc === "-" ? "" : i.desc;
                 const tipoLabel = i.isGroupedVacation ? `VACACIONES SEMANA ${i.weekLabel}` : (i.tipoOriginal === 'negativa_empresa' ? 'NEGATIVAS OF.EMPRESA' : i.tipoOriginal.toUpperCase());
                 
                 let badgeVence = '';
                 if (i.venceStr) {
-                    if (i.tachado) {
-                        badgeVence = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 8px; font-weight: 600; text-decoration: line-through; opacity: 0.6;">⏳ Caduca: ${i.venceStr}</span>`;
-                    } else {
-                        badgeVence = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 8px; font-weight: 600;">⏳ Caduca: ${i.venceStr}</span>`;
-                    }
+                    if (i.tachado) badgeVence = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 8px; font-weight: 600; text-decoration: line-through; opacity: 0.6;">⏳ Caduca: ${i.venceStr}</span>`;
+                    else badgeVence = `<span style="font-size: 12px; color: var(--text-muted); margin-left: 8px; font-weight: 600;">⏳ Caduca: ${i.venceStr}</span>`;
                 }
 
                 mesHTML += `
@@ -1571,22 +1298,17 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         let hrsExtra = Math.floor(totalMinsExtra / 60);
         let minsExtra = (totalMinsExtra % 60).toString().padStart(2, '0');
         let signExtra = tExtra < 0 ? "-" : "";
-
         document.getElementById("totalExtra").innerHTML = `${tExtra.toFixed(2)} <span style="font-size: 1.1rem; color: var(--text-muted); font-weight: 700; margin-left: 4px;">(${signExtra}${hrsExtra}h ${minsExtra}m)</span>`;
         document.getElementById("totalNeg").innerText = tNeg.toFixed(2);
         document.getElementById("totalExceso").innerText = tExc.toFixed(2);
     }
 
-    // Funciones de UI
     window.toggleModo = () => {
         document.body.classList.toggle("dark-mode");
         localStorage.setItem("modo", document.body.classList.contains("dark-mode") ? "dark" : "light");
-        
-        // Refrescar colores personalizados tras cambiar de modo
         const config = JSON.parse(localStorage.getItem('app_theme_config'));
-        if (config) {
-            window.aplicarTema(config);
-        } else {
+        if (config) window.aplicarTema(config);
+        else {
             document.documentElement.style.removeProperty('--bg-body');
             document.documentElement.style.removeProperty('--bg-card');
             document.documentElement.style.removeProperty('--text-main');
@@ -1601,7 +1323,6 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
     }
 
     let mCb = null;
-    // Función showModal actualizada para permitir cambiar el título y cambiar Entendido por Atrás
     window.showModal = (msg, conf = false, cb = null, title = "Confirmación") => {
         document.getElementById("modalTitle").innerText = title;
         document.getElementById("modalText").innerHTML = msg;
@@ -1612,13 +1333,8 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         mCb = cb;
     };
     
-    document.getElementById("modalBtnOk").onclick = () => {
-        document.getElementById("customModal").style.display = "none";
-        if (mCb) mCb();
-    };
-    document.getElementById("modalBtnCancel").onclick = () => {
-        document.getElementById("customModal").style.display = "none";
-    };
+    document.getElementById("modalBtnOk").onclick = () => { document.getElementById("customModal").style.display = "none"; if (mCb) mCb(); };
+    document.getElementById("modalBtnCancel").onclick = () => { document.getElementById("customModal").style.display = "none"; };
 
     window.exportarPDF = () => {
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
@@ -1633,12 +1349,11 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         });
 
         doc.setFontSize(11);
-        doc.setTextColor(60);
+        doc.setTextColor(60); // Corregido el color de texto PDF
         doc.text("RESUMEN GENERAL", 14, 32);
         
         doc.autoTable({
-            startY: 35,
-            theme: 'grid',
+            startY: 35, theme: 'grid',
             headStyles: { fillColor: [240, 240, 240], textColor: [50, 50, 50], fontStyle: 'bold' },
             head: [['EXTRA ACUMULADAS', 'NEGATIVAS', 'EXCESO']],
             body: [[tExtra.toFixed(2) + " h", tNeg.toFixed(2) + " h", tExc.toFixed(2) + " h"]],
@@ -1646,7 +1361,6 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         });
 
         let finalY = doc.lastAutoTable.finalY || 35;
-        
         let processedLocales = [];
         let vacGroups = {};
 
@@ -1657,33 +1371,20 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
                 if (!vacGroups[key]) vacGroups[key] = { items: [], ids: [] };
                 vacGroups[key].items.push(item);
                 vacGroups[key].ids.push(item.id);
-            } else {
-                processedLocales.push(item);
-            }
+            } else { processedLocales.push(item); }
         });
 
         Object.keys(vacGroups).forEach(k => {
             const g = vacGroups[k];
             g.items.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-            const startItem = g.items[0];
-            const endItem = g.items[g.items.length-1];
-            
-            const sf = new Date(startItem.fecha);
-            const ef = new Date(endItem.fecha);
+            const startItem = g.items[0], endItem = g.items[g.items.length-1];
+            const sf = new Date(startItem.fecha), ef = new Date(endItem.fecha);
             const sfFmt = `${String(sf.getDate()).padStart(2,'0')}/${String(sf.getMonth()+1).padStart(2,'0')}`;
             const efFmt = `${String(ef.getDate()).padStart(2,'0')}/${String(ef.getMonth()+1).padStart(2,'0')}/${ef.getFullYear()}`;
-            
-            processedLocales.push({
-                ...startItem,
-                id: g.ids.join(','),
-                isGroupedVacation: true,
-                weekLabel: k.split('-W')[1],
-                fFmtStr: `${sfFmt} - ${efFmt}`,
-            });
+            processedLocales.push({ ...startItem, id: g.ids.join(','), isGroupedVacation: true, weekLabel: k.split('-W')[1], fFmtStr: `${sfFmt} - ${efFmt}` });
         });
         
         const registrosSorted = processedLocales.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-
         const meses = {};
         registrosSorted.forEach(item => {
             const f = new Date(item.fecha);
@@ -1700,85 +1401,49 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
             Object.keys(meses).sort((a,b) => b.localeCompare(a)).forEach(k => {
                 const m = meses[k];
                 finalY += 15;
+                if (finalY > 270) { doc.addPage(); finalY = 20; }
                 
-                if (finalY > 270) {
-                    doc.addPage();
-                    finalY = 20;
-                }
-                
-                doc.setFontSize(12);
-                doc.setTextColor(40);
-                doc.setFont(undefined, 'bold');
+                doc.setFontSize(12); doc.setTextColor(40); doc.setFont(undefined, 'bold');
                 doc.text(`${m.label.toUpperCase()} ${m.year}`, 14, finalY);
 
                 const tableData = m.items.map(i => {
-                    if (i.isGroupedVacation) {
-                        return [
-                            i.fFmtStr, 
-                            `VACACIONES SEMANA ${i.weekLabel}`, 
-                            "-", 
-                            "-", 
-                            i.desc
-                        ];
-                    }
-                    return [
-                        i.fecha.split('-').reverse().join('/'), 
-                        i.tipoOriginal === 'negativa_empresa' ? 'NEGATIVAS OF.EMPRESA' : i.tipoOriginal.toUpperCase(), 
-                        i.horasOriginales.toFixed(2), 
-                        i.horasCalculadas.toFixed(2), 
-                        i.desc
-                    ];
+                    if (i.isGroupedVacation) return [ i.fFmtStr, `VACACIONES SEMANA ${i.weekLabel}`, "-", "-", i.desc ];
+                    return [ i.fecha.split('-').reverse().join('/'), i.tipoOriginal === 'negativa_empresa' ? 'NEGATIVAS OF.EMPRESA' : i.tipoOriginal.toUpperCase(), i.horasOriginales.toFixed(2), i.horasCalculadas.toFixed(2), i.desc ];
                 });
 
                 doc.autoTable({ 
-                    startY: finalY + 4, 
-                    head: [['Fecha', 'Tipo', 'Horas Base', 'Horas Calc.', 'Observaciones']], 
-                    body: tableData,
-                    headStyles: { fillColor: [59, 130, 246] }, 
-                    alternateRowStyles: { fillColor: [248, 250, 252] },
+                    startY: finalY + 4, head: [['Fecha', 'Tipo', 'Horas Base', 'Horas Calc.', 'Observaciones']], 
+                    body: tableData, headStyles: { fillColor: [59, 130, 246] }, alternateRowStyles: { fillColor: [248, 250, 252] },
                     margin: { left: 14, right: 14 }
                 });
-                
                 finalY = doc.lastAutoTable.finalY;
             });
         }
-
         doc.save(`Horas_MD_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.pdf`);
     };
 
     window.exportarJSON = () => {
-        if (registrosLocales.length === 0) {
-            showModal("No hay registros para exportar.");
-            return;
-        }
+        if (registrosLocales.length === 0) { showModal("No hay registros para exportar."); return; }
         const exportData = registrosLocales.map(({ fFmt, id, ...rest }) => rest);
         const dataStr = JSON.stringify(exportData, null, 2);
         const blob = new Blob([dataStr], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
-        a.href = url;
-        a.download = `Horas_MD_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        a.href = url; a.download = `Horas_MD_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.json`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     };
 
     window.importarJSON = (event) => {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = async (e) => {
             try {
                 const data = JSON.parse(e.target.result);
                 if (!Array.isArray(data)) throw new Error("Formato de archivo inválido.");
-                
                 document.getElementById('importFile').value = '';
-
                 showModal(isGuestMode ? `¿Deseas importar ${data.length} registros localmente?` : `¿Deseas importar ${data.length} registros a la nube?`, true, async () => {
                     if (!currentUser) return;
-                    
                     const originalText = document.getElementById("lista-cargando").innerText;
                     document.getElementById("lista-cargando").style.display = "block";
                     document.getElementById("lista-cargando").innerText = "Importando datos, por favor espera...";
@@ -1803,24 +1468,13 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
                         const ref = collection(db, 'artifacts', appIdStr, 'users', currentUser.uid, 'registros');
                         for (const item of data) {
                             const { id, fFmt, ...registroLimpio } = item; 
-                            if (registroLimpio.fecha && registroLimpio.tipoOriginal) {
-                                await addDoc(ref, registroLimpio);
-                            }
+                            if (registroLimpio.fecha && registroLimpio.tipoOriginal) await addDoc(ref, registroLimpio);
                         }
                         showToast(`Registros importados correctamente`);
-                    } catch (error) {
-                        console.error(error);
-                        showModal("Error al importar los registros.");
-                    } finally {
-                        document.getElementById("lista-cargando").innerText = originalText;
-                        document.getElementById("lista-cargando").style.display = "none";
-                    }
+                    } catch (error) { showModal("Error al importar los registros."); } 
+                    finally { document.getElementById("lista-cargando").innerText = originalText; document.getElementById("lista-cargando").style.display = "none"; }
                 });
-            } catch (error) {
-                console.error(error);
-                showModal("Error al leer el archivo JSON. Verifica que sea válido.");
-                document.getElementById('importFile').value = '';
-            }
+            } catch (error) { showModal("Error al leer el archivo JSON. Verifica que sea válido."); document.getElementById('importFile').value = ''; }
         };
         reader.readAsText(file);
     };
