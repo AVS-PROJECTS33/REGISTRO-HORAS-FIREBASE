@@ -320,6 +320,13 @@
                     <option value="vacaciones">🌴 Vacaciones</option>
                 </select>
             </div>
+            <div class="form-group" id="grupo-ano-vacaciones" style="display: none;">
+                <label>Año</label>
+                <select id="ano-vacaciones" onchange="generarSemanas()">
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                </select>
+            </div>
             <div class="form-group" id="grupo-semana" style="display: none;">
                 <label>Semana del año</label>
                 <select id="semana"></select>
@@ -378,8 +385,9 @@
         </div>
         
         <div id="seccion-historial" style="display: none; margin-top: 16px;">
-            <div style="display: flex; justify-content: center; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 12px;">
                 <button class="btn-icon" style="background: var(--success); color: white; border: none; padding: 8px 14px; font-size: 13px;" onclick="exportarPDF()">📄 Extraer PDF</button>
+                <select id="ano-historial" onchange="filtrarLocal()" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; width: auto;"></select>
             </div>
             <input type="text" id="buscador" placeholder="Buscar por nota o fecha..." oninput="filtrarLocal()">
             <div id="lista-cargando" style="text-align:center; padding: 20px; color: var(--text-muted);">Sincronizando datos...</div>
@@ -677,11 +685,14 @@
         const isVac = document.getElementById("tipo").value === "vacaciones";
         const isEditing = idEdicion !== null;
         if (isVac && !isEditing) {
+            document.getElementById("grupo-ano-vacaciones").style.display = "block";
             document.getElementById("grupo-semana").style.display = "block";
             document.getElementById("grupo-fecha").style.display = "none";
             document.getElementById("grupo-horas").style.display = "none";
+            if (!document.getElementById("ano-vacaciones").value) document.getElementById("ano-vacaciones").value = new Date().getFullYear();
             if (document.getElementById("semana").options.length === 0) window.generarSemanas();
         } else {
+            document.getElementById("grupo-ano-vacaciones").style.display = "none";
             document.getElementById("grupo-semana").style.display = "none";
             document.getElementById("grupo-fecha").style.display = "block";
             document.getElementById("grupo-horas").style.display = "block";
@@ -691,7 +702,7 @@
     window.generarSemanas = () => {
         const select = document.getElementById("semana");
         select.innerHTML = "";
-        const year = new Date().getFullYear();
+        const year = parseInt(document.getElementById("ano-vacaciones").value) || new Date().getFullYear();
         let d = new Date(year, 0, 1);
         const day = d.getDay();
         const diff = d.getDate() - day + (day === 0 ? -6 : 1);
@@ -1177,6 +1188,26 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
 
     function renderizarUI() {
         renderizarCalendario();
+        
+        const selectAno = document.getElementById("ano-historial");
+        const anosUnicos = new Set();
+        anosUnicos.add(new Date().getFullYear());
+        registrosLocales.forEach(r => anosUnicos.add(parseInt(r.fecha.split('-')[0])));
+        const anosOrdenados = Array.from(anosUnicos).sort((a, b) => b - a);
+        
+        const valorActual = selectAno.value || new Date().getFullYear().toString();
+        selectAno.innerHTML = "";
+        anosOrdenados.forEach(ano => {
+            const opt = document.createElement("option");
+            opt.value = ano;
+            opt.text = `Año ${ano}`;
+            if (ano.toString() === valorActual) opt.selected = true;
+            selectAno.appendChild(opt);
+        });
+        
+        const anoFiltro = selectAno.value;
+        const registrosDelAno = registrosLocales.filter(r => r.fecha.startsWith(anoFiltro));
+
         const cont = document.getElementById("lista");
         cont.innerHTML = "";
         let tExtra = 0, tNeg = 0, tExc = 0;
@@ -1184,7 +1215,7 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         const filter = document.getElementById("buscador").value.toLowerCase();
         
         let horasConsumidas = 0;
-        registrosLocales.forEach(item => {
+        registrosDelAno.forEach(item => {
             if (item.horasOriginales < 0 && item.tipoOriginal !== "negativa" && item.tipoOriginal !== "exceso" && item.tipoOriginal !== "negativa_empresa") {
                 horasConsumidas += Math.abs(item.horasCalculadas);
             } else if (item.tipoOriginal === "compensacion" && item.horasOriginales > 0) {
@@ -1192,7 +1223,7 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
             }
         });
 
-        let extraPositivas = registrosLocales.filter(r => r.tipoOriginal === "extra" && r.horasOriginales > 0).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        let extraPositivas = registrosDelAno.filter(r => r.tipoOriginal === "extra" && r.horasOriginales > 0).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
         let idsTachados = new Set();
         for (let r of extraPositivas) {
             if (horasConsumidas >= (r.horasCalculadas - 0.05)) { idsTachados.add(r.id); horasConsumidas -= r.horasCalculadas; } 
@@ -1203,7 +1234,7 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         let processedLocales = [];
         let vacGroups = {};
 
-        registrosLocales.forEach(item => {
+        registrosDelAno.forEach(item => {
             if (item.tipoOriginal === 'vacaciones') {
                 const wy = window.getWeekAndYear(item.fecha);
                 const key = `${wy.year}-W${wy.week}`;
@@ -1252,8 +1283,8 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
             meses[mKey].items.push({ ...item, fFmt, venceStr, tachado });
         });
 
-        if(Object.keys(meses).length === 0 && registrosLocales.length > 0) cont.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No hay coincidencias.</div>`;
-        else if (registrosLocales.length === 0) cont.innerHTML = `<div style="text-align:center; padding: 30px; color: var(--text-muted);">Aún no tienes registros.</div>`;
+        if(Object.keys(meses).length === 0 && registrosDelAno.length > 0) cont.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No hay coincidencias.</div>`;
+        else if (registrosDelAno.length === 0) cont.innerHTML = `<div style="text-align:center; padding: 30px; color: var(--text-muted);">Aún no tienes registros en este año.</div>`;
 
         Object.keys(meses).sort((a,b) => b.localeCompare(a)).forEach((k, index) => {
             const m = meses[k], isFiltering = filter !== "", isExpanded = isFiltering; 
@@ -1337,11 +1368,14 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
     document.getElementById("modalBtnCancel").onclick = () => { document.getElementById("customModal").style.display = "none"; };
 
     window.exportarPDF = () => {
+        const anoFiltro = document.getElementById("ano-historial").value || new Date().getFullYear().toString();
+        const registrosDelAno = registrosLocales.filter(r => r.fecha.startsWith(anoFiltro));
+
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        doc.setFontSize(16); doc.text("REGISTRO HORAS MD", 14, 20);
+        doc.setFontSize(16); doc.text(`REGISTRO HORAS MD - ${anoFiltro}`, 14, 20);
         
         let tExtra = 0, tNeg = 0, tExc = 0;
-        registrosLocales.forEach(i => {
+        registrosDelAno.forEach(i => {
             if (i.tipoOriginal === "negativa" || i.tipoOriginal === "negativa_empresa") tNeg += i.horasCalculadas;
             else if (i.tipoOriginal === "exceso") tExc += i.horasCalculadas;
             else if (i.tipoOriginal === "compensacion" && i.horasOriginales > 0) tExtra -= i.horasCalculadas;
@@ -1364,7 +1398,7 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         let processedLocales = [];
         let vacGroups = {};
 
-        registrosLocales.forEach(item => {
+        registrosDelAno.forEach(item => {
             if (item.tipoOriginal === 'vacaciones') {
                 const wy = window.getWeekAndYear(item.fecha);
                 const key = `${wy.year}-W${wy.week}`;
@@ -1419,7 +1453,7 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
                 finalY = doc.lastAutoTable.finalY;
             });
         }
-        doc.save(`Horas_MD_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.pdf`);
+        doc.save(`Horas_MD_${anoFiltro}_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.pdf`);
     };
 
     window.exportarJSON = () => {
