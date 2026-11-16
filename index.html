@@ -1210,12 +1210,21 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
 
         const cont = document.getElementById("lista");
         cont.innerHTML = "";
-        let tExtra = 0, tNeg = 0, tExc = 0;
         
         const filter = document.getElementById("buscador").value.toLowerCase();
         
+        // --- CÁLCULO GLOBAL (Mantener saldos y caducidades correctos a lo largo de los años) ---
+        let tExtra = 0, tNeg = 0, tExc = 0;
         let horasConsumidas = 0;
-        registrosDelAno.forEach(item => {
+        
+        registrosLocales.forEach(item => {
+            // Totales globales de las tarjetas
+            if (item.tipoOriginal === "negativa" || item.tipoOriginal === "negativa_empresa") tNeg += item.horasCalculadas; 
+            else if (item.tipoOriginal === "exceso") tExc += item.horasCalculadas;
+            else if (item.tipoOriginal === "compensacion" && item.horasOriginales > 0) tExtra -= item.horasCalculadas;
+            else if (item.tipoOriginal !== "vacaciones") tExtra += item.horasCalculadas;
+
+            // Lógica de caducidad
             if (item.horasOriginales < 0 && item.tipoOriginal !== "negativa" && item.tipoOriginal !== "exceso" && item.tipoOriginal !== "negativa_empresa") {
                 horasConsumidas += Math.abs(item.horasCalculadas);
             } else if (item.tipoOriginal === "compensacion" && item.horasOriginales > 0) {
@@ -1223,12 +1232,13 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
             }
         });
 
-        let extraPositivas = registrosDelAno.filter(r => r.tipoOriginal === "extra" && r.horasOriginales > 0).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        let extraPositivas = registrosLocales.filter(r => r.tipoOriginal === "extra" && r.horasOriginales > 0).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
         let idsTachados = new Set();
         for (let r of extraPositivas) {
             if (horasConsumidas >= (r.horasCalculadas - 0.05)) { idsTachados.add(r.id); horasConsumidas -= r.horasCalculadas; } 
             else { horasConsumidas -= r.horasCalculadas; }
         }
+        // -------------------------------------------------------------------------------------
 
         const meses = {};
         let processedLocales = [];
@@ -1265,11 +1275,6 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
                 const searchString = `${fFmt} ${mesNombre} ${item.desc} ${item.tipoOriginal} ${item.horasOriginales}`.toLowerCase();
                 if (!searchString.includes(filter)) return;
             }
-
-            if (item.tipoOriginal === "negativa" || item.tipoOriginal === "negativa_empresa") tNeg += item.horasCalculadas; 
-            else if (item.tipoOriginal === "exceso") tExc += item.horasCalculadas;
-            else if (item.tipoOriginal === "compensacion" && item.horasOriginales > 0) tExtra -= item.horasCalculadas;
-            else if (item.tipoOriginal !== "vacaciones") tExtra += item.horasCalculadas;
 
             const mKey = `${f.getFullYear()}-${String(f.getMonth()+1).padStart(2,'0')}`;
             if (!meses[mKey]) meses[mKey] = { label: mesNombre, items: [] };
@@ -1374,8 +1379,9 @@ ${!hideEdit ? `<button class="editar-btn" onclick="editarRegistro('${r.id}')">Ed
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
         doc.setFontSize(16); doc.text(`REGISTRO HORAS MD - ${anoFiltro}`, 14, 20);
         
+        // Los totales en el PDF también deben ser globales para reflejar el estado real
         let tExtra = 0, tNeg = 0, tExc = 0;
-        registrosDelAno.forEach(i => {
+        registrosLocales.forEach(i => {
             if (i.tipoOriginal === "negativa" || i.tipoOriginal === "negativa_empresa") tNeg += i.horasCalculadas;
             else if (i.tipoOriginal === "exceso") tExc += i.horasCalculadas;
             else if (i.tipoOriginal === "compensacion" && i.horasOriginales > 0) tExtra -= i.horasCalculadas;
